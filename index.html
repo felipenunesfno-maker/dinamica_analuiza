@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matriz de Eisenhower — Ana Luíza</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0031FF;
+      --blue-dark: #0026cc;
+      --blue-mid: #1a47ff;
+      --blue-light: #e6eaff;
+      --bg: #f2f4fc;
+      --white: #ffffff;
+      --ink: #0a0e2e;
+      --ink2: #3d4166;
+      --ink3: #7b82b0;
+
+      --q1: #D0021B;   --q1-bg: #fff0f2;  --q1-border: #ffc9cf;
+      --q2: #0031FF;   --q2-bg: #eef1ff;  --q2-border: #b3bfff;
+      --q3: #C05200;   --q3-bg: #fff7ed;  --q3-border: #fed7aa;
+      --q4: #525673;   --q4-bg: #f1f2f8;  --q4-border: #d1d3e8;
+
+      --radius: 16px;
+      --shadow-sm: 0 1px 4px rgba(0,49,255,.06), 0 2px 12px rgba(0,0,0,.05);
+      --shadow-md: 0 4px 24px rgba(0,49,255,.09), 0 2px 8px rgba(0,0,0,.06);
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    header {
+      background: var(--blue); color: #fff;
+      text-align: center; padding: 42px 24px 50px;
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% -10%, #0044ff 0%, transparent 65%),
+        radial-gradient(circle 300px at 10% 110%, rgba(160,180,255,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    header::after {
+      content: ''; position: absolute;
+      bottom: -1px; left: 0; right: 0; height: 36px;
+      background: var(--bg); clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    .header-tag {
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: .24em; text-transform: uppercase; color: rgba(255,255,255,.6);
+      margin-bottom: 14px; position: relative;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .header-tag::before, .header-tag::after { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,.3); }
+    header h1 {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.45rem, 5vw, 2.4rem);
+      font-weight: 800; line-height: 1.15; position: relative; margin-bottom: 8px;
+    }
+    header h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, #a0b4ff 0%, #ffffff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .header-sub { font-size: 12.5px; color: rgba(255,255,255,.5); position: relative; }
+
+    .page { max-width: 700px; margin: 0 auto; padding: 0 15px 60px; }
+
+    .profile-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 20px; display: flex; gap: 15px; align-items: center;
+      margin-top: 28px; border-top: 4px solid var(--blue);
+    }
+    .avatar {
+      width: 54px; height: 54px; border-radius: 50%; background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0; border: 2.5px solid var(--blue);
+    }
+    .profile-info h2 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .profile-info p { font-size: 13px; color: var(--ink2); line-height: 1.55; }
+
+    .instr-box {
+      background: var(--blue-light); border-radius: 12px; padding: 14px 16px;
+      font-size: 13px; color: var(--blue-dark); line-height: 1.65;
+      margin-top: 14px; border: 1.5px solid rgba(0,49,255,.25);
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .instr-box .ic { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+
+    .prog-wrap { margin-top: 16px; }
+    .prog-track { height: 5px; background: rgba(0,49,255,.12); border-radius: 5px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--blue); border-radius: 5px; transition: width .4s ease; }
+    .prog-label { font-size: 11.5px; color: var(--ink3); margin-top: 6px; }
+    .prog-label strong { color: var(--blue); font-weight: 600; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--blue);
+      margin: 26px 0 13px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,49,255,.2), transparent); }
+
+    .sit-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 18px 18px 16px; margin-bottom: 12px;
+      border: 1.5px solid #e2e6f5; transition: border-color .2s, box-shadow .2s;
+    }
+    .sit-card.answered {
+      border-color: var(--chosen-color, var(--blue));
+      box-shadow: 0 0 0 3px rgba(0,49,255,.07), var(--shadow-sm);
+    }
+    .sit-header { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; }
+    .sit-badge {
+      background: var(--blue); color: #fff; font-family: 'Syne', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: .06em;
+      padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .sit-card p.sit-text { font-size: 14px; color: var(--ink2); line-height: 1.65; }
+    .q-label { font-size: 10.5px; font-weight: 600; color: var(--ink3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .q-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    @media(max-width:390px) { .q-buttons { grid-template-columns: 1fr; } }
+
+    .q-btn {
+      border: 1.5px solid var(--qb, #e2e6f5); border-radius: 10px; padding: 10px 11px;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; text-align: left;
+      transition: transform .13s, background .13s, border-color .13s, box-shadow .13s;
+      line-height: 1.4; background: var(--qbg, #f8f9ff); color: var(--qc, var(--ink));
+    }
+    .q-btn:active { transform: scale(.96); }
+    .q-btn.selected { background: var(--qc) !important; color: #fff !important; border-color: var(--qc) !important; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+    .q-btn .qdesc { font-size: 10px; font-weight: 400; display: block; margin-top: 2px; opacity: .75; }
+    .q-btn.selected .qdesc { opacity: .82; color: rgba(255,255,255,.82); }
+
+    .answered-pill {
+      display: none; margin-top: 11px; font-size: 11.5px; font-weight: 600;
+      padding: 4px 11px; border-radius: 20px; width: fit-content;
+      background: var(--chosen-bg, #eef1ff); color: var(--chosen-color, var(--blue));
+    }
+    .sit-card.answered .answered-pill { display: inline-block; }
+
+    .matrix-box { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 20px 18px; }
+    .matrix-box h3 { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: 3px; }
+    .matrix-box .msub { font-size: 12px; color: var(--ink3); margin-bottom: 14px; }
+    .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mcell { border-radius: 10px; padding: 11px 12px; min-height: 66px; }
+    .mcell.mq1 { background: var(--q1-bg); border: 1.5px solid var(--q1-border); }
+    .mcell.mq2 { background: var(--q2-bg); border: 1.5px solid var(--q2-border); }
+    .mcell.mq3 { background: var(--q3-bg); border: 1.5px solid var(--q3-border); }
+    .mcell.mq4 { background: var(--q4-bg); border: 1.5px solid var(--q4-border); }
+    .mcell-head { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
+    .mq1 .mcell-head { color: var(--q1); } .mq2 .mcell-head { color: var(--q2); }
+    .mq3 .mcell-head { color: var(--q3); } .mq4 .mcell-head { color: var(--q4); }
+    .mchips { display: flex; flex-wrap: wrap; gap: 5px; }
+    .mchip { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; }
+    .mq1 .mchip { background: #ffc9cf; color: var(--q1); }
+    .mq2 .mchip { background: #b3bfff; color: #0026cc; }
+    .mq3 .mchip { background: #fed7aa; color: #92400e; }
+    .mq4 .mchip { background: #d1d3e8; color: var(--q4); }
+    .mempty { font-size: 11px; color: #bbb; font-style: italic; }
+
+    /* ── AMBIGUOUS ── */
+    .ambig-card {
+      background: var(--ink); color: #fff;
+      border-radius: var(--radius); padding: 24px 20px 20px;
+      position: relative; overflow: hidden;
+    }
+    .ambig-card::before {
+      content: '?'; position: absolute; right: 14px; top: 4px;
+      font-family: 'Syne', sans-serif; font-size: 8rem; font-weight: 800;
+      color: rgba(255,255,255,.04); line-height: 1; pointer-events: none;
+    }
+    .ambig-eyebrow {
+      font-family: 'Syne', sans-serif; font-size: 9.5px; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase; color: #a0b4ff;
+      margin-bottom: 11px; display: flex; align-items: center; gap: 8px;
+    }
+    .ambig-eyebrow::before { content: ''; width: 18px; height: 2px; background: #a0b4ff; border-radius: 2px; }
+    .ambig-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+    .ambig-desc { font-size: 13.5px; line-height: 1.7; color: rgba(255,255,255,.6); margin-bottom: 15px; }
+
+    .reflection {
+      background: rgba(255,255,255,.07); border-left: 3px solid #a0b4ff;
+      padding: 12px 14px; border-radius: 0 8px 8px 0; margin-bottom: 16px;
+    }
+    .reflection p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,.78); font-style: italic; }
+
+    /* the key question card — unique to this case */
+    .key-question {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px; padding: 14px 15px; margin-bottom: 16px;
+    }
+    .key-question-label {
+      font-family: 'Syne', sans-serif; font-size: 9.5px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: #a0b4ff; margin-bottom: 10px;
+    }
+    .key-question-items { display: flex; flex-direction: column; gap: 8px; }
+    .kq-item { display: flex; gap: 10px; align-items: flex-start; }
+    .kq-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+    }
+    .kq-dot.q2-dot { background: #a0b4ff; }
+    .kq-dot.q4-dot { background: #9ca3af; }
+    .kq-item p { font-size: 12.5px; line-height: 1.6; color: rgba(255,255,255,.62); }
+    .kq-item p strong { font-weight: 600; color: rgba(255,255,255,.9); }
+
+    .debate-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+    @media(max-width:400px) { .debate-cards { grid-template-columns: 1fr; } }
+    .debate-card { border-radius: 10px; padding: 12px 13px; }
+    .debate-card.side-q2 { background: rgba(0,49,255,.18); border: 1px solid rgba(163,183,255,.25); }
+    .debate-card.side-q4 { background: rgba(82,86,115,.22); border: 1px solid rgba(209,211,232,.15); }
+    .debate-card-head { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .side-q2 .debate-card-head { color: #a0b4ff; }
+    .side-q4 .debate-card-head { color: #9ca3b8; }
+    .debate-card p { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.6); }
+
+    .vote-lbl { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 9px; }
+    .av-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    @media(max-width:390px) { .av-buttons { grid-template-columns: 1fr; } }
+    .av-btn {
+      padding: 11px 13px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+      text-align: left; transition: transform .13s, box-shadow .13s; line-height: 1.4; color: #fff;
+    }
+    .av-btn:active { transform: scale(.96); }
+    .av-btn.selected { outline: 2.5px solid #fff; outline-offset: 2px; }
+    .av-btn .qdesc { font-size: 10px; font-weight: 400; display: block; margin-top: 2px; opacity: .8; }
+    .av1 { background: var(--q1); } .av2 { background: var(--blue-mid); }
+    .av3 { background: var(--q3); } .av4 { background: var(--q4); }
+
+    .vbars { margin-top: 16px; }
+    .vbars-title { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 10px; }
+    .vrow { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+    .vlbl { font-size: 10.5px; font-weight: 700; width: 24px; flex-shrink: 0; }
+    .vlq1 { color: #ff6070; } .vlq2 { color: #a0b4ff; } .vlq3 { color: #fcd34d; } .vlq4 { color: #9ca3af; }
+    .vtrack { flex: 1; height: 6px; background: rgba(255,255,255,.1); border-radius: 4px; overflow: hidden; }
+    .vfill { height: 100%; border-radius: 4px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+    .vf1 { background: #D0021B; } .vf2 { background: #a0b4ff; } .vf3 { background: #C05200; } .vf4 { background: #9ca3af; }
+    .vcnt { font-size: 10.5px; color: rgba(255,255,255,.38); width: 20px; text-align: right; flex-shrink: 0; }
+
+    .reset-wrap { margin-top: 22px; text-align: center; }
+    .btn-reset {
+      background: none; border: 1.5px solid #c8cbdb; color: var(--ink3);
+      padding: 10px 24px; border-radius: 30px; font-family: 'Inter', sans-serif;
+      font-size: 13px; cursor: pointer; transition: background .18s, color .18s, border-color .18s;
+    }
+    .btn-reset:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    footer { text-align: center; padding: 32px 20px 20px; font-size: 11px; color: var(--ink3); }
+    footer span { color: var(--blue); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Treinamento &amp; Desenvolvimento</div>
+  <h1>Organização Interna e <em>Autogestão da Vida</em></h1>
+  <p class="header-sub">Dinâmica — Matriz de Eisenhower</p>
+</header>
+
+<div class="page">
+
+  <!-- PROFILE -->
+  <div class="profile-card">
+    <div class="avatar">🙋‍♀️</div>
+    <div class="profile-info">
+      <h2>Ana Luíza, 23 anos — assistente, mora sozinha</h2>
+      <p>Primeiro emprego na área. Ansiosa, quer fazer tudo ao mesmo tempo e sente que não consegue nada direito.</p>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instr-box">
+    <span class="ic">💡</span>
+    <div><strong>Como participar:</strong> Leia cada situação e toque no quadrante que você acha mais adequado. Ao final, debate em grupo a situação ambígua. Você pode mudar sua resposta quando quiser.</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <p class="prog-label"><strong id="prog-text">0 de 4</strong> situações respondidas</p>
+  </div>
+
+  <!-- SITUATIONS -->
+  <div class="section-label">Situações do dia de Ana Luíza</div>
+
+  <!-- S1 -->
+  <div class="sit-card" id="sc-s1">
+    <div class="sit-header">
+      <div class="sit-badge">Situação 1</div>
+      <p class="sit-text">Quer criar uma reserva de emergência, mas gasta tudo antes do fim do mês. Nunca sentou para organizar as finanças de verdade.</p>
+    </div>
+    <div class="q-label">Em qual quadrante essa situação se encaixa?</div>
+    <div class="q-buttons">
+      <button class="q-btn" id="s1-q1" onclick="choose('s1','q1',this)" style="--qbg:var(--q1-bg);--qc:var(--q1);--qb:var(--q1-border)">
+        Q1 — Faça agora<span class="qdesc">Urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s1-q2" onclick="choose('s1','q2',this)" style="--qbg:var(--q2-bg);--qc:var(--q2);--qb:var(--q2-border)">
+        Q2 — Planeje<span class="qdesc">Não urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s1-q3" onclick="choose('s1','q3',this)" style="--qbg:var(--q3-bg);--qc:var(--q3);--qb:var(--q3-border)">
+        Q3 — Delegue<span class="qdesc">Urgente + Não importante</span>
+      </button>
+      <button class="q-btn" id="s1-q4" onclick="choose('s1','q4',this)" style="--qbg:var(--q4-bg);--qc:var(--q4);--qb:var(--q4-border)">
+        Q4 — Elimine<span class="qdesc">Nem urgente, nem importante</span>
+      </button>
+    </div>
+    <div class="answered-pill" id="pill-s1">✓ Respondida</div>
+  </div>
+
+  <!-- S2 -->
+  <div class="sit-card" id="sc-s2">
+    <div class="sit-header">
+      <div class="sit-badge">Situação 2</div>
+      <p class="sit-text">Recebe pedidos de opinião de amigas o dia todo pelo WhatsApp — "o que eu faço com isso?", "você viu o que ela postou?" — e responde tudo na hora.</p>
+    </div>
+    <div class="q-label">Em qual quadrante essa situação se encaixa?</div>
+    <div class="q-buttons">
+      <button class="q-btn" id="s2-q1" onclick="choose('s2','q1',this)" style="--qbg:var(--q1-bg);--qc:var(--q1);--qb:var(--q1-border)">
+        Q1 — Faça agora<span class="qdesc">Urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s2-q2" onclick="choose('s2','q2',this)" style="--qbg:var(--q2-bg);--qc:var(--q2);--qb:var(--q2-border)">
+        Q2 — Planeje<span class="qdesc">Não urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s2-q3" onclick="choose('s2','q3',this)" style="--qbg:var(--q3-bg);--qc:var(--q3);--qb:var(--q3-border)">
+        Q3 — Delegue<span class="qdesc">Urgente + Não importante</span>
+      </button>
+      <button class="q-btn" id="s2-q4" onclick="choose('s2','q4',this)" style="--qbg:var(--q4-bg);--qc:var(--q4);--qb:var(--q4-border)">
+        Q4 — Elimine<span class="qdesc">Nem urgente, nem importante</span>
+      </button>
+    </div>
+    <div class="answered-pill" id="pill-s2">✓ Respondida</div>
+  </div>
+
+  <!-- S3 -->
+  <div class="sit-card" id="sc-s3">
+    <div class="sit-header">
+      <div class="sit-badge">Situação 3</div>
+      <p class="sit-text">Aluguel atrasou e o locador mandou notificação. Precisa resolver em 48h ou paga multa. Não tinha se organizado financeiramente.</p>
+    </div>
+    <div class="q-label">Em qual quadrante essa situação se encaixa?</div>
+    <div class="q-buttons">
+      <button class="q-btn" id="s3-q1" onclick="choose('s3','q1',this)" style="--qbg:var(--q1-bg);--qc:var(--q1);--qb:var(--q1-border)">
+        Q1 — Faça agora<span class="qdesc">Urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s3-q2" onclick="choose('s3','q2',this)" style="--qbg:var(--q2-bg);--qc:var(--q2);--qb:var(--q2-border)">
+        Q2 — Planeje<span class="qdesc">Não urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s3-q3" onclick="choose('s3','q3',this)" style="--qbg:var(--q3-bg);--qc:var(--q3);--qb:var(--q3-border)">
+        Q3 — Delegue<span class="qdesc">Urgente + Não importante</span>
+      </button>
+      <button class="q-btn" id="s3-q4" onclick="choose('s3','q4',this)" style="--qbg:var(--q4-bg);--qc:var(--q4);--qb:var(--q4-border)">
+        Q4 — Elimine<span class="qdesc">Nem urgente, nem importante</span>
+      </button>
+    </div>
+    <div class="answered-pill" id="pill-s3">✓ Respondida</div>
+  </div>
+
+  <!-- S4 -->
+  <div class="sit-card" id="sc-s4">
+    <div class="sit-header">
+      <div class="sit-badge">Situação 4</div>
+      <p class="sit-text">Compra cursos online com frequência — já tem 7 não terminados — porque sente que está "investindo em si mesma".</p>
+    </div>
+    <div class="q-label">Em qual quadrante essa situação se encaixa?</div>
+    <div class="q-buttons">
+      <button class="q-btn" id="s4-q1" onclick="choose('s4','q1',this)" style="--qbg:var(--q1-bg);--qc:var(--q1);--qb:var(--q1-border)">
+        Q1 — Faça agora<span class="qdesc">Urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s4-q2" onclick="choose('s4','q2',this)" style="--qbg:var(--q2-bg);--qc:var(--q2);--qb:var(--q2-border)">
+        Q2 — Planeje<span class="qdesc">Não urgente + Importante</span>
+      </button>
+      <button class="q-btn" id="s4-q3" onclick="choose('s4','q3',this)" style="--qbg:var(--q3-bg);--qc:var(--q3);--qb:var(--q3-border)">
+        Q3 — Delegue<span class="qdesc">Urgente + Não importante</span>
+      </button>
+      <button class="q-btn" id="s4-q4" onclick="choose('s4','q4',this)" style="--qbg:var(--q4-bg);--qc:var(--q4);--qb:var(--q4-border)">
+        Q4 — Elimine<span class="qdesc">Nem urgente, nem importante</span>
+      </button>
+    </div>
+    <div class="answered-pill" id="pill-s4">✓ Respondida</div>
+  </div>
+
+  <!-- MATRIX SUMMARY -->
+  <div class="section-label">Resumo — Sua Matriz</div>
+  <div class="matrix-box">
+    <h3>Matriz de Eisenhower</h3>
+    <p class="msub">Veja onde você alocou cada situação</p>
+    <div class="m-grid">
+      <div class="mcell mq1"><div class="mcell-head">Q1 — Faça agora</div><div class="mchips" id="mc-q1"><span class="mempty">—</span></div></div>
+      <div class="mcell mq2"><div class="mcell-head">Q2 — Planeje</div><div class="mchips" id="mc-q2"><span class="mempty">—</span></div></div>
+      <div class="mcell mq3"><div class="mcell-head">Q3 — Delegue</div><div class="mchips" id="mc-q3"><span class="mempty">—</span></div></div>
+      <div class="mcell mq4"><div class="mcell-head">Q4 — Elimine</div><div class="mchips" id="mc-q4"><span class="mempty">—</span></div></div>
+    </div>
+  </div>
+
+  <!-- AMBIGUOUS -->
+  <div class="section-label">Situação Ambígua — Para Debate</div>
+  <div class="ambig-card">
+    <div class="ambig-eyebrow">Discussão em grupo</div>
+    <h3>Ana Luíza quer terminar o namoro há 3 meses — mas toda semana ela pensa "essa semana eu resolvo".</h3>
+    <p class="ambig-desc">O relacionamento está no automático: não brigam, mas também não saem juntos faz semanas. E ela viu curtidas do namorado nas fotos da melhor amiga. Sabe, aquelas fotos.</p>
+
+    <div class="reflection">
+      <p>Terminar um namoro é importante e afeta a vida dela diretamente — mas é urgente? Ela sofre todo dia que adia, mas agir sem preparo emocional pode virar drama. Onde o grupo coloca isso?</p>
+    </div>
+
+    <!-- the key distinguisher -->
+    <div class="key-question">
+      <div class="key-question-label">A virada está em entender se isso é cuidado — ou procrastinação emocional</div>
+      <div class="key-question-items">
+        <div class="kq-item">
+          <div class="kq-dot q2-dot"></div>
+          <p><strong>É Q2 se:</strong> ela está genuinamente se preparando para uma conversa honesta e madura. Terminar bem exige preparo — não é fuga, é processo.</p>
+        </div>
+        <div class="kq-item">
+          <div class="kq-dot q4-dot"></div>
+          <p><strong>É Q1 disfarçado de Q4 se:</strong> ela está só esperando ele terminar pra não precisar fazer nada. O adiamento já é a decisão.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="debate-cards">
+      <div class="debate-card side-q2">
+        <div class="debate-card-head">🔵 Argumento Q2</div>
+        <p>Terminar relacionamento sem preparo emocional vira briga, choro e arrependimento às 2h da manhã. Isso exige planejamento — o momento certo importa.</p>
+      </div>
+      <div class="debate-card side-q4">
+        <div class="debate-card-head">⚫ Argumento Q1</div>
+        <p>Três meses adiando com curtidas suspeitas no Instagram da melhor amiga não é preparo emocional — é custo emocional diário. Cada dia a mais dói mais.</p>
+      </div>
+    </div>
+
+    <div class="vote-lbl">Escolha seu quadrante:</div>
+    <div class="av-buttons">
+      <button class="av-btn av1" onclick="voteAmbig('q1',this)">Q1 — Faça agora<span class="qdesc">Urgente + Importante</span></button>
+      <button class="av-btn av2" onclick="voteAmbig('q2',this)">Q2 — Planeje<span class="qdesc">Não urgente + Importante</span></button>
+      <button class="av-btn av3" onclick="voteAmbig('q3',this)">Q3 — Delegue<span class="qdesc">Urgente + Não importante</span></button>
+      <button class="av-btn av4" onclick="voteAmbig('q4',this)">Q4 — Elimine<span class="qdesc">Nem urgente, nem importante</span></button>
+    </div>
+
+    <div class="vbars" id="vbars" style="display:none">
+      <div class="vbars-title">Votos do grupo</div>
+      <div class="vrow"><div class="vlbl vlq1">Q1</div><div class="vtrack"><div class="vfill vf1" id="vb-q1" style="width:0%"></div></div><div class="vcnt" id="vc-q1">0</div></div>
+      <div class="vrow"><div class="vlbl vlq2">Q2</div><div class="vtrack"><div class="vfill vf2" id="vb-q2" style="width:0%"></div></div><div class="vcnt" id="vc-q2">0</div></div>
+      <div class="vrow"><div class="vlbl vlq3">Q3</div><div class="vtrack"><div class="vfill vf3" id="vb-q3" style="width:0%"></div></div><div class="vcnt" id="vc-q3">0</div></div>
+      <div class="vrow"><div class="vlbl vlq4">Q4</div><div class="vtrack"><div class="vfill vf4" id="vb-q4" style="width:0%"></div></div><div class="vcnt" id="vc-q4">0</div></div>
+    </div>
+  </div>
+
+  <!-- RESET -->
+  <div class="reset-wrap">
+    <button class="btn-reset" onclick="resetAll()">↺ &nbsp;Reiniciar dinâmica</button>
+  </div>
+
+</div>
+
+<footer><span>Treinamento &amp; Desenvolvimento</span> · Organização Interna e Autogestão da Vida</footer>
+
+<script>
+  const SITS  = ['s1','s2','s3','s4'];
+  const NAMES = { s1:'Situação 1', s2:'Situação 2', s3:'Situação 3', s4:'Situação 4' };
+  const Q_CSS = {
+    q1: { color:'var(--q1)', bg:'var(--q1-bg)' },
+    q2: { color:'var(--q2)', bg:'var(--q2-bg)' },
+    q3: { color:'var(--q3)', bg:'var(--q3-bg)' },
+    q4: { color:'var(--q4)', bg:'var(--q4-bg)' },
+  };
+  const chosen = {};
+  const votes  = { q1:0, q2:0, q3:0, q4:0 };
+  let myVote   = null;
+
+  function choose(sid, qid, btn) {
+    const prev = chosen[sid];
+    if (prev) document.getElementById(sid+'-'+prev)?.classList.remove('selected');
+    if (prev === qid) {
+      delete chosen[sid];
+      document.getElementById('sc-'+sid).classList.remove('answered');
+      refreshMatrix(); refreshProgress(); return;
+    }
+    chosen[sid] = qid;
+    btn.classList.add('selected');
+    const card = document.getElementById('sc-'+sid);
+    card.classList.add('answered');
+    card.style.setProperty('--chosen-color', Q_CSS[qid].color);
+    card.style.setProperty('--chosen-bg',    Q_CSS[qid].bg);
+    document.getElementById('pill-'+sid).textContent = '✓ ' + btn.firstChild.textContent.trim();
+    refreshMatrix(); refreshProgress();
+  }
+
+  function refreshMatrix() {
+    ['q1','q2','q3','q4'].forEach(q => document.getElementById('mc-'+q).innerHTML = '');
+    SITS.forEach(s => {
+      const q = chosen[s]; if (!q) return;
+      const el = document.getElementById('mc-'+q);
+      const c  = document.createElement('span');
+      c.className = 'mchip'; c.textContent = NAMES[s];
+      el.appendChild(c);
+    });
+    ['q1','q2','q3','q4'].forEach(q => {
+      const el = document.getElementById('mc-'+q);
+      if (!el.children.length) el.innerHTML = '<span class="mempty">—</span>';
+    });
+  }
+
+  function refreshProgress() {
+    const n = Object.keys(chosen).length;
+    document.getElementById('prog-fill').style.width = (n/4*100)+'%';
+    document.getElementById('prog-text').textContent = n+' de 4';
+  }
+
+  function voteAmbig(qid, btn) {
+    if (myVote) {
+      votes[myVote] = Math.max(0, votes[myVote]-1);
+      document.querySelector('.av-btn.selected')?.classList.remove('selected');
+    }
+    if (myVote === qid) { myVote = null; refreshVotes(); return; }
+    votes[qid]++; myVote = qid;
+    btn.classList.add('selected');
+    refreshVotes();
+  }
+
+  function refreshVotes() {
+    const total = Object.values(votes).reduce((a,b)=>a+b,0);
+    document.getElementById('vbars').style.display = total > 0 ? 'block' : 'none';
+    ['q1','q2','q3','q4'].forEach(q => {
+      const pct = total ? Math.round(votes[q]/total*100) : 0;
+      document.getElementById('vb-'+q).style.width = pct+'%';
+      document.getElementById('vc-'+q).textContent = votes[q];
+    });
+  }
+
+  function resetAll() {
+    SITS.forEach(s => {
+      const prev = chosen[s];
+      if (prev) document.getElementById(s+'-'+prev)?.classList.remove('selected');
+      delete chosen[s];
+      document.getElementById('sc-'+s).classList.remove('answered');
+      document.getElementById('pill-'+s).textContent = '✓ Respondida';
+    });
+    refreshMatrix(); refreshProgress();
+    ['q1','q2','q3','q4'].forEach(q => votes[q] = 0);
+    myVote = null;
+    document.querySelector('.av-btn.selected')?.classList.remove('selected');
+    refreshVotes();
+  }
+</script>
+</body>
+</html>
